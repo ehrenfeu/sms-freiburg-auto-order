@@ -10,12 +10,17 @@ from selenium.common.exceptions import NoSuchElementException
 from schulessen_credentials import USERNAME, PASSWORD
 
 
-def place_new_orders():
+def place_new_orders(browser):
     """Check for order buttons and click the ones titled "Bestellen".
 
     If a button having the title "Bestellen" is found, it is clicked and the function
     returns immmediately as the DOM of the page will be changed and no further actions
     would succeed (e.g. it's not possible to click all "Bestellen" buttons in one go).
+
+    Parameters
+    ----------
+    browser : WebDriver
+        The current selenium WebDriver instance.
 
     Returns
     -------
