@@ -60,6 +60,22 @@ def place_new_orders():
 
 
 def load_menu_page(headless=True, snap=False):
+    """Start a FireFox instance and log into the SMS ordering portal.
+
+    Parameters
+    ----------
+    headless : bool, optional
+        Start the browser in "headless" mode, by default True.
+    snap : bool, optional
+        Assume Firefox is installed via "snap" and set the `binary_location`
+        option accordingly (otherwise starting FF on Ubuntu 22.04 may fail
+        occasionally), by default False.
+
+    Returns
+    -------
+    WebDriver
+        The selenium FireFox WebDriver instance.
+    """
     logging.info("Starting Firefox...")
     options = FirefoxOptions()
     if snap:
