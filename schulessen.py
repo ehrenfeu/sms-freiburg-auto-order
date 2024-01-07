@@ -32,8 +32,10 @@ def place_new_orders(browser):
     orders_old = []
     orders_new = []
 
+    # xpath values:
     minus = '[title="Bestellung reduzieren"]'
     plus = '[title="Bestellen"]'
+    pre_sibling_2up = "../../preceding-sibling::*"
 
     buttons_minus = browser.find_elements(by="css selector", value=minus)
     buttons_plus = browser.find_elements(by="css selector", value=plus)
@@ -45,16 +47,35 @@ def place_new_orders(browser):
     logging.info(f"Found {total_buttons} order buttons.")
     for button in buttons_minus:
         order_date = button.get_attribute("bstdt")
-        logging.info(f"[{order_date}]: already ordered ✅")
+        try:
+            menu_cell = button.find_element(by="xpath", value=pre_sibling_2up)
+            menu_text = menu_cell.text
+        except Exception:
+            menu_text = "--- Couldn't find menu details! ---"
+
+        logging.info(
+            f"----- ⏮  ✅ Already ordered before: [{order_date}] ⏮  ✅ -----\n"
+            f"{menu_text}"
+        )
         orders_old.append(order_date)
 
     for button in buttons_plus:
         order_date = button.get_attribute("bstdt")
-        logging.info(f"[{order_date}]: NEW order option ⭐")
-        logging.info(f"Ordering...")
+        try:
+            menu_cell = button.find_element(by="xpath", value=pre_sibling_2up)
+            menu_text = menu_cell.text
+        except Exception:
+            menu_text = "--- Couldn't find menu details! ---"
+
+        logging.info(
+            f"\n----- ⭐ NEW 🍽   order option: [{order_date}] -----\n"
+            f"{menu_text}\n\n"
+            "🧑‍🍳 Placing order 🍽  ..."
+        )
         button.click()
         orders_new.append(order_date)
         sleep(2)
+        logging.info("⭐ 🍽  Done ✅")
         return orders_old, orders_new
 
     return orders_old, orders_new
