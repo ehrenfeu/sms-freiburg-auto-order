@@ -59,9 +59,11 @@ def place_new_orders():
 # logger.setLevel(logging.INFO)
 
 
-def load_menu_page(headless=True):
+def load_menu_page(headless=True, snap=False):
     logging.info("Starting Firefox...")
     options = FirefoxOptions()
+    if snap:
+        options.binary_location = "/snap/firefox/current/firefox.launcher"
     if headless:
         options.add_argument("--headless")
     browser = Firefox(options=options)
