@@ -1,0 +1,6 @@
+# Python bytecode
+*.pyc
+
+# credentials
+schulessen_credentials.py
+
