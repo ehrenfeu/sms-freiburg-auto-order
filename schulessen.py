@@ -111,6 +111,30 @@ def load_menu_page(headless=True, snap=False):
     return browser
 
 
+def click_next_week_button(browser):
+    """Find the 'Next Week' button and click it.
+
+    Parameters
+    ----------
+    browser : WebDriver
+        The current selenium WebDriver instance.
+
+    Returns
+    -------
+    bool
+        True in case exactly one 'Next Week' button was found (and clicked),
+        False otherwise (indicating there is no such button, or more than one).
+    """
+    btns_next_week = browser.find_elements(
+        by="css selector", value='[alt="Eine Woche vor"]'
+    )
+    if len(btns_next_week) != 1:
+        return False
+
+    btns_next_week[0].click()
+    return True
+
+
 if __name__ == "__main__":
     browser = load_menu_page()
 
