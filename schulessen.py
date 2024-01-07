@@ -53,10 +53,7 @@ def place_new_orders(browser):
         except Exception:
             menu_text = "--- Couldn't find menu details! ---"
 
-        logging.info(
-            f"----- ⏮  ✅ Already ordered before: [{order_date}] ⏮  ✅ -----\n"
-            f"{menu_text}"
-        )
+        print(f"--- ⏮  ✅ Ordered already: [{order_date}] ---\n{menu_text}\n")
         orders_old.append(order_date)
 
     for button in buttons_plus:
@@ -67,15 +64,12 @@ def place_new_orders(browser):
         except Exception:
             menu_text = "--- Couldn't find menu details! ---"
 
-        logging.info(
-            f"\n----- ⭐ NEW 🍽   order option: [{order_date}] -----\n"
-            f"{menu_text}\n\n"
-            "🧑‍🍳 Placing order 🍽  ..."
-        )
+        print(f"\n--- ⭐ NEW 🍽   order option: [{order_date}] ---\n{menu_text}\n\n")
+        print("🧑‍🍳 Placing order 🍽 ...")
         button.click()
         orders_new.append(order_date)
         sleep(2)
-        logging.info("⭐ 🍽  Done ✅")
+        print("⭐ 🍽  Done ✅\n")
         return orders_old, orders_new
 
     return orders_old, orders_new
@@ -153,15 +147,15 @@ def click_next_week_button(browser):
     if len(btns_next_week) != 1:
         return False
 
-    logging.info("Navigating to next week...")
+    print("====== Navigating to next week... ======\n")
     btns_next_week[0].click()
     return True
 
 
-def setup_logging():
-    """Set loguru stderr loggging level and format."""
+def setup_logging(level="WARNING"):
+    """Set loguru stderr loggging level."""
     logging.remove()
-    logging.add(sink=sys.stderr, level="DEBUG", format="{message}\n")
+    logging.add(sink=sys.stderr, level=level)
 
 
 if __name__ == "__main__":
@@ -176,6 +170,6 @@ if __name__ == "__main__":
         sleep(2)
         old, new = place_new_orders(browser)
 
-    logging.info("No 'next week' button found, end of order period reached.")
+    print("No more 'next week' button found, end of order period reached.")
 
     browser.quit()
