@@ -177,5 +177,5 @@ if __name__ == "__main__":
         old, new = place_new_orders(browser)
 
     logging.info("No 'next week' button found, end of order period reached.")
+
     browser.quit()
-    sys.exit(0)
