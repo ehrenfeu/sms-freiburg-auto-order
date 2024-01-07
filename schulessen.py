@@ -59,10 +59,11 @@ def place_new_orders():
 # logger.setLevel(logging.INFO)
 
 
-def load_menu_page():
+def load_menu_page(headless=True):
     logging.info("Starting Firefox...")
     options = FirefoxOptions()
-    options.add_argument("--headless")
+    if headless:
+        options.add_argument("--headless")
     browser = Firefox(options=options)
 
     logging.info("Loading login page...")
