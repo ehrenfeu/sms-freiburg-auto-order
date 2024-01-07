@@ -87,14 +87,13 @@ def load_menu_page(headless=True, snap=False):
     logging.info("Loading login page...")
     browser.get("https://sms-freiburg.de/")
 
-
     logging.info("Attempting to log in...")
     try:
         input_username = browser.find_element(by="id", value="ID_USERNAME")
         input_password = browser.find_element(by="id", value="ID_PASSWORD")
         button_login = browser.find_element(by="id", value="ID_LOGIN")
     except NoSuchElementException as err:
-        logging.error(f"Login failed, connection error or changed layout? Message: {err}")
+        logging.error(f"Login failed, message: {err}")
         sys.exit(1)
 
     input_username.send_keys(USERNAME)
@@ -106,7 +105,7 @@ def load_menu_page(headless=True, snap=False):
         speiseplan = browser.find_element(by="link text", value="Speiseplan")
         speiseplan.click()
     except NoSuchElementException as err:
-        logging.error(f"Dashboard error, login failed or changed layout? Message: {err}")
+        logging.error(f"Dashboard error, message: {err}")
         sys.exit(2)
 
     return browser
