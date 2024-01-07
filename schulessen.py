@@ -138,18 +138,13 @@ def click_next_week_button(browser):
 if __name__ == "__main__":
     browser = load_menu_page()
 
-    while True:
+    sleep(2)
+    old, new = place_new_orders(browser)
+
+    while click_next_week_button(browser):
         sleep(2)
+        old, new = place_new_orders(browser)
 
-        old, new = place_new_orders()
-        # as long as 'new' is not empty, keep ordering:
-        while new:
-            old, new = place_new_orders()
-
-        if len(old) + len(new) == 0:
-            logging.info("No order buttons found, end of order period reached.")
-            browser.quit()
-            sys.exit(0)
-
-        week_plus = browser.find_element(by="css selector", value='[alt="Eine Woche vor"]')
-        week_plus.click()
+    logging.info("No 'next week' button found, end of order period reached.")
+    browser.quit()
+    sys.exit(0)
