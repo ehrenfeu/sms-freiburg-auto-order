@@ -81,10 +81,6 @@ def place_new_orders(browser):
     return orders_old, orders_new
 
 
-# logger = logging.getLogger()
-# logger.setLevel(logging.INFO)
-
-
 def load_menu_page(headless=True, snap=False):
     """Start a FireFox instance and log into the SMS ordering portal.
 
@@ -161,7 +157,15 @@ def click_next_week_button(browser):
     return True
 
 
+def setup_logging():
+    """Set loguru stderr loggging level and format."""
+    logging.remove()
+    logging.add(sink=sys.stderr, level="DEBUG", format="{message}\n")
+
+
 if __name__ == "__main__":
+    setup_logging()
+
     browser = load_menu_page()
 
     sleep(2)
