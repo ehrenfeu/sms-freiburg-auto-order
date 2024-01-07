@@ -10,6 +10,44 @@ from selenium.common.exceptions import NoSuchElementException
 from schulessen_credentials import USERNAME, PASSWORD
 
 
+def menu_details(order_button):
+    """Try to find the menu details related to a given order button.
+
+    Parameters
+    ----------
+    order_button : selenium.webdriver.remote.webelement.WebElement
+        An order (or order cancellation) button.
+
+    Returns
+    -------
+    str
+        The menu details. If the identified text has a well-known format (i.e.
+        consisting of three sections separated by double-newlines), it is parsed
+        and re-formatted to only contain the main dish description in a single
+        line (dropping the last one which usually contains allergene details).
+    """
+    # xpath values:
+    pre_sibling_2up = "../../preceding-sibling::*"
+    try:
+        menu_cell = order_button.find_element(by="xpath", value=pre_sibling_2up)
+        menu_text = menu_cell.text
+    except Exception:
+        msg = "--- Couldn't find menu details! ---"
+        logging.warning(msg)
+        return msg
+
+    # a "regular" menu text contains three sections which are separated by two
+    # consecutive newlines - if that's the case, only return the middle one
+    # (containing the main dish) replacing single newlines by a space:
+    menu_sections = menu_text.split("\n\n")
+    if len(menu_sections) != 3:
+        logging.warning("Couldn't parse menu details!")
+        return menu_text
+
+    main_dish = menu_sections[1].split("\n")
+    return " ".join(main_dish[:-1])
+
+
 def place_new_orders(browser):
     """Check for order buttons and click the ones titled "Bestellen".
 
@@ -35,7 +73,6 @@ def place_new_orders(browser):
     # xpath values:
     minus = '[title="Bestellung reduzieren"]'
     plus = '[title="Bestellen"]'
-    pre_sibling_2up = "../../preceding-sibling::*"
 
     buttons_minus = browser.find_elements(by="css selector", value=minus)
     buttons_plus = browser.find_elements(by="css selector", value=plus)
@@ -47,23 +84,13 @@ def place_new_orders(browser):
     logging.info(f"Found {total_buttons} order buttons.")
     for button in buttons_minus:
         order_date = button.get_attribute("bstdt")
-        try:
-            menu_cell = button.find_element(by="xpath", value=pre_sibling_2up)
-            menu_text = menu_cell.text
-        except Exception:
-            menu_text = "--- Couldn't find menu details! ---"
-
+        menu_text = menu_details(button)
         print(f"--- ⏮  ✅ Ordered already: [{order_date}] ---\n{menu_text}\n")
         orders_old.append(order_date)
 
     for button in buttons_plus:
         order_date = button.get_attribute("bstdt")
-        try:
-            menu_cell = button.find_element(by="xpath", value=pre_sibling_2up)
-            menu_text = menu_cell.text
-        except Exception:
-            menu_text = "--- Couldn't find menu details! ---"
-
+        menu_text = menu_details(button)
         print(f"\n--- ⭐ NEW 🍽   order option: [{order_date}] ---\n{menu_text}\n\n")
         print("🧑‍🍳 Placing order 🍽 ...")
         button.click()
