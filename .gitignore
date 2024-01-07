@@ -1,6 +1,6 @@
-# Python bytecode
+# Python bytecode, venv, ...
 *.pyc
+/venv/
 
 # credentials
 schulessen_credentials.py
-
