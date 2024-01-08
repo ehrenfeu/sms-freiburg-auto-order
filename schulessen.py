@@ -225,10 +225,12 @@ if __name__ == "__main__":
 
     sleep(2)
     old, new = place_new_orders(browser)
+    print_orders(old, new)
 
     while click_next_week_button(browser):
         sleep(2)
         old, new = place_new_orders(browser)
+        print_orders(old, new)
 
     print("No more 'next week' button found, end of order period reached.")
 
