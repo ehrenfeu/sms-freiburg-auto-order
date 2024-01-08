@@ -185,6 +185,35 @@ def setup_logging(level="WARNING"):
     logging.add(sink=sys.stderr, level=level)
 
 
+def print_orders(old, new):
+    """Print a summary of existing and new orders.
+
+    Parameters
+    ----------
+    old : list(dict)
+        A list with existing order details, as returned by `place_new_orders()`.
+    new : list(dict)
+        Same as `old`, only for newly placed orders.
+    """
+    if not old and not new:
+        return
+
+    ymd = "%Y-%m-%d"
+    dt_min = min([x["date"] for x in old + new]).strftime(ymd)
+    dt_max = max([x["date"] for x in old + new]).strftime(ymd)
+
+    print(f"------ Summary 📋 for [{dt_min}] to [{dt_max}] 📅 ------")
+    if old:
+        print("\n--- ⏮  ✅ Existing orders:")
+        for order in old:
+            print(f"> [{order['date'].strftime(ymd)}] - {order['menu']}")
+
+    if new:
+        print("\n--- 🆕 NEWLY 🍽  placed orders:")
+        for order in new:
+            print(f"> 🧑‍🍳 ⭐ [{order['date'].strftime(ymd)}] - {order['menu']}")
+
+
 if __name__ == "__main__":
     setup_logging()
 
