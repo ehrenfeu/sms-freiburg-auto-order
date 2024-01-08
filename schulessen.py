@@ -1,5 +1,6 @@
 import sys
 
+from datetime import datetime
 from time import sleep
 
 from loguru import logger as logging
@@ -62,10 +63,11 @@ def place_new_orders(browser):
 
     Returns
     -------
-    list(str), list(str)
-        Two lists containing the 'bstdt' (Bestelldatum?) attributes of the identified
-        buttons, the first one being the "Bestellung reduzieren" buttons, the second
-        one being the "Bestellen" buttons.
+    list(dict), list(dict)
+        Two lists containing dicts with details on menu orders, the first one being
+        existing orders, the second one being newly placed orders. The dicts are having
+        two keys, `date` for the order date and `menu` for the menu details (the parsed
+        and shortened description as returned by `menu_details()`).
     """
     orders_old = []
     orders_new = []
@@ -78,26 +80,28 @@ def place_new_orders(browser):
     buttons_plus = browser.find_elements(by="css selector", value=plus)
 
     total_buttons = len(buttons_minus) + len(buttons_plus)
-    if total_buttons == 0:
-        return orders_old, orders_new
-
     logging.info(f"Found {total_buttons} order buttons.")
-    for button in buttons_minus:
-        order_date = button.get_attribute("bstdt")
-        menu_text = menu_details(button)
-        print(f"--- ⏮  ✅ Ordered already: [{order_date}] ---\n{menu_text}\n")
-        orders_old.append(order_date)
 
-    for button in buttons_plus:
-        order_date = button.get_attribute("bstdt")
+    for button in buttons_minus:
+        order_date = datetime.strptime(button.get_attribute("bstdt"), r"%Y-%m-%d")
         menu_text = menu_details(button)
-        print(f"\n--- ⭐ NEW 🍽   order option: [{order_date}] ---\n{menu_text}\n\n")
-        print("🧑‍🍳 Placing order 🍽 ...")
+        # print(f"--- ⏮  ✅ Existing order: [{order_date}] ---\n{menu_text}\n")
+        orders_old.append({"date": order_date, "menu": menu_text})
+
+    while buttons_plus:
+        button = buttons_plus[0]
+        order_date = datetime.strptime(button.get_attribute("bstdt"), r"%Y-%m-%d")
+        menu_text = menu_details(button)
+        logging.debug(
+            f"\n--- ⭐ NEW 🍽   order option: [{order_date}] --------\n"
+            f"{menu_text}\n\n"
+        )
+        logging.debug("🧑‍🍳 Placing order 🍽 ...")
         button.click()
-        orders_new.append(order_date)
         sleep(2)
-        print("⭐ 🍽  Done ✅\n")
-        return orders_old, orders_new
+        logging.debug("⭐ 🍽  Done ✅\n")
+        orders_new.append({"date": order_date, "menu": menu_text})
+        buttons_plus = browser.find_elements(by="css selector", value=plus)
 
     return orders_old, orders_new
 
