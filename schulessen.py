@@ -178,7 +178,7 @@ def click_next_week_button(browser):
     if len(btns_next_week) != 1:
         return False
 
-    print("====== Navigating to next week... ======\n")
+    logging.debug("====== Navigating to next week... ======")
     btns_next_week[0].click()
     return True
 
@@ -216,6 +216,8 @@ def print_orders(old, new):
         print("\n--- 🆕 NEWLY 🍽  placed orders:")
         for order in new:
             print(f"> 🧑‍🍳 ⭐ [{order['date'].strftime(ymd)}] - {order['menu']}")
+
+    print("\n")
 
 
 if __name__ == "__main__":
