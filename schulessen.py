@@ -206,18 +206,18 @@ def print_orders(old, new):
     dt_min = min([x["date"] for x in old + new]).strftime(ymd)
     dt_max = max([x["date"] for x in old + new]).strftime(ymd)
 
-    print(f"------ Summary 📋 for [{dt_min}] to [{dt_max}] 📅 ------")
+    print(f">>> Summary 📋 for [{dt_min}] - [{dt_max}] 📅")
     if old:
-        print("\n--- ⏮  ✅ Existing orders:")
+        print("\n>> ⏮  ✅ Existing orders:")
         for order in old:
             print(f"> [{order['date'].strftime(ymd)}] - {order['menu']}")
 
     if new:
-        print("\n--- 🆕 NEWLY 🍽  placed orders:")
+        print("\n>> 🆕 NEWLY 🍽  placed orders:")
         for order in new:
             print(f"> 🧑‍🍳 ⭐ [{order['date'].strftime(ymd)}] - {order['menu']}")
 
-    print("\n")
+    print("\n\n")
 
 
 if __name__ == "__main__":
@@ -234,6 +234,6 @@ if __name__ == "__main__":
         old, new = place_new_orders(browser)
         print_orders(old, new)
 
-    print("No more 'next week' button found, end of order period reached.")
+    print("End of order period reached, stopping.")
 
     browser.quit()
